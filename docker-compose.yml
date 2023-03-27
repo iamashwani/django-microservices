@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
+  
+  sqlite4:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
+
+  sqlite5:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
+
+  auth_microservice:
+    build:
+      context: ./auth_microservice
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - sqlite3
+
+  profile_microservice:
+    build:
+      context: ./profile_microservice
+    ports:
+      - "8001:8001"
+    command: python manage.py runserver 0.0.0.0:8001
+    depends_on:
+      - sqlite4
+
+  payment_microservice:
+    build:
+      context: ./payment_microservice
+    ports:
+      - "8002:8002"
+    command: python manage.py runserver 0.0.0.0:8002
+    depends_on:
+      - sqlite5
